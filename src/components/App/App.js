@@ -1,6 +1,7 @@
 import "./styles.css";
 import { Note } from "../../components/Note/Note.js";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
@@ -9,14 +10,11 @@ export default function App() {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      fetch("https://jsonplaceholder.typicode.com/posts")
-        .then((response) => response.json())
-        .then((json) => {
-          setNotes(json);
-          setLoading(false);
-        });
-    }, 2000);
+    axios.get("https://jsonplaceholder.typicode.com/posts").then((response) => {
+      const { data } = response;
+      setNotes(data);
+      setLoading(false);
+    });
   }, []);
 
   const handleChange = (event) => {
@@ -37,7 +35,6 @@ export default function App() {
     <div>
       <h1>Notes</h1>
       {loading ? "Cargando..." : ""}
-
       <ol>
         {notes.map((note) => (
           <Note key={note.id} {...note} />
